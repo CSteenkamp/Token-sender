@@ -4,7 +4,7 @@ import { useWallet, useWalletList } from '@meshsdk/react';
 import { useState } from 'react';
 
 export default function WalletConnection() {
-  const { connect, connected, disconnect, wallet } = useWallet();
+  const { connect, connected, disconnect, wallet, name } = useWallet();
   const wallets = useWalletList();
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<string>('');
@@ -47,7 +47,7 @@ export default function WalletConnection() {
             </div>
             <div>
               <p className="font-semibold text-gray-900">Wallet Connected</p>
-              <p className="text-sm text-gray-600 capitalize">{wallet.name}</p>
+              <p className="text-sm text-gray-600 capitalize">{name || 'Connected'}</p>
             </div>
           </div>
           <button

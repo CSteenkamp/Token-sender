@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useWallet } from '@meshsdk/react';
-import { Asset, Transaction, MeshTxBuilder } from '@meshsdk/core';
+import { Asset, Transaction } from '@meshsdk/core';
 
 interface SendFormProps {
   availableAssets: Asset[];
@@ -103,48 +103,27 @@ export default function SendForm({ availableAssets, onTransactionComplete }: Sen
     setError('');
 
     try {
-      const txBuilder = new MeshTxBuilder({
-        fetcher: wallet.fetcher,
-        submitter: wallet.submitter,
-      });
-
+      const tx = new Transaction({ initiator: wallet });
       const sendAmount = parseFloat(amount);
 
       if (selectedAsset.id === 'ada') {
         // Send ADA
-        const lovelaceAmount = Math.floor(sendAmount * 1000000); // Convert ADA to lovelace
-        
-        txBuilder
-          .txOut(recipient, [
-            {
-              unit: 'lovelace',
-              quantity: lovelaceAmount.toString(),
-            },
-          ]);
+        const lovelaceAmount = Math.floor(sendAmount * 1000000).toString();
+        tx.sendLovelace(recipient, lovelaceAmount);
       } else {
         // Send native token
         const assetUnit = `${selectedAsset.policyId}${selectedAsset.assetName || ''}`;
+        const tokenAmount = Math.floor(sendAmount).toString();
         
-        txBuilder
-          .txOut(recipient, [
-            {
-              unit: assetUnit,
-              quantity: Math.floor(sendAmount).toString(),
-            },
-          ]);
+        tx.sendAssets(recipient, [
+          {
+            unit: assetUnit,
+            quantity: tokenAmount,
+          },
+        ]);
       }
 
-      // Get wallet UTXOs and change address
-      const utxos = await wallet.getUtxos();
-      const changeAddress = await wallet.getChangeAddress();
-
-      // Build the transaction
-      const unsignedTx = await txBuilder
-        .selectUtxosFrom(utxos)
-        .changeAddress(changeAddress)
-        .complete();
-
-      // Sign and submit the transaction
+      const unsignedTx = await tx.build();
       const signedTx = await wallet.signTx(unsignedTx);
       const txHash = await wallet.submitTx(signedTx);
 

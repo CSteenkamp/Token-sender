@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+
+// Force dynamic rendering to avoid WASM prerendering issues
+export const dynamic = 'force-dynamic';
 import { useWallet } from '@meshsdk/react';
 import { Asset } from '@meshsdk/core';
 import WalletConnection from '../components/WalletConnection';
