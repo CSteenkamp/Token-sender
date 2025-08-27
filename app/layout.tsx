@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import './globals.css';
+import HeaderWalletSection from '../components/HeaderWalletSection';
 
 export const metadata: Metadata = {
   title: 'Cardano Token Sender',
@@ -24,7 +25,7 @@ export default function RootLayout({
         <div className="min-h-screen">
           {/* Header */}
           <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-cardano-blue rounded-lg flex items-center justify-center">
@@ -33,6 +34,11 @@ export default function RootLayout({
                   <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                     Cardano Token Sender
                   </h1>
+                </div>
+                
+                {/* Wallet Connection Area */}
+                <div className="flex items-center space-x-3">
+                  <HeaderWalletSection />
                 </div>
               </div>
             </div>
