@@ -1,4 +1,5 @@
 import WorkingThemeToggle from '../components/WorkingThemeToggle';
+import SimpleNetworkSelector from '../components/SimpleNetworkSelector';
 
 export default function Home() {
   return (
@@ -21,6 +22,7 @@ export default function Home() {
               App Settings
             </h3>
             <div className="flex items-center space-x-3">
+              <SimpleNetworkSelector />
               <WorkingThemeToggle />
             </div>
           </div>
