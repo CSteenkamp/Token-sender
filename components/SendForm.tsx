@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useWallet } from '@meshsdk/react';
 import { Asset, Transaction } from '@meshsdk/core';
+import { useNetwork } from './NetworkProvider';
+import { NetworkValidationService, NetworkValidationError } from '../services/validation';
+import TokenImage from './TokenImage';
 
 interface SendFormProps {
   availableAssets: Asset[];
@@ -20,6 +23,7 @@ type AssetOption = {
 
 export default function SendForm({ availableAssets, onTransactionComplete }: SendFormProps) {
   const { connected, wallet } = useWallet();
+  const { currentNetwork, networkConfig, isNetworkMismatch } = useNetwork();
   const [recipient, setRecipient] = useState('');
   const [selectedAsset, setSelectedAsset] = useState<AssetOption | null>(null);
   const [amount, setAmount] = useState('');
@@ -99,10 +103,19 @@ export default function SendForm({ availableAssets, onTransactionComplete }: Sen
   const handleSend = async () => {
     if (!validateForm() || !wallet || !selectedAsset) return;
 
+    // Additional network validation before sending
+    if (isNetworkMismatch) {
+      setError(`Cannot send transaction: wallet network mismatch. Please connect to ${networkConfig.displayName}.`);
+      return;
+    }
+
     setLoading(true);
     setError('');
 
     try {
+      // Validate wallet network before proceeding
+      await NetworkValidationService.validateWalletNetwork(wallet, currentNetwork);
+      
       const tx = new Transaction({ initiator: wallet });
       const sendAmount = parseFloat(amount);
 
@@ -135,7 +148,11 @@ export default function SendForm({ availableAssets, onTransactionComplete }: Sen
       
     } catch (err: any) {
       console.error('Transaction error:', err);
-      setError(err.message || 'Transaction failed. Please try again.');
+      if (err instanceof NetworkValidationError) {
+        setError(`Network Error: ${err.message}`);
+      } else {
+        setError(err.message || `Transaction failed on ${networkConfig.displayName}. Please try again.`);
+      }
     } finally {
       setLoading(false);
     }
@@ -145,56 +162,94 @@ export default function SendForm({ availableAssets, onTransactionComplete }: Sen
 
   return (
     <div className="card">
-      <h3 className="text-xl font-bold text-gray-900 mb-6">Send Transaction</h3>
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Send Transaction</h3>
+        <span className={`network-indicator network-${currentNetwork}`}>
+          {networkConfig.displayName}
+        </span>
+      </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-100 border border-red-200 text-red-700 rounded-md">
+        <div className="error-message mb-4">
           {error}
+        </div>
+      )}
+
+      {isNetworkMismatch && (
+        <div className="warning-message mb-4">
+          <strong>Network Mismatch:</strong> Your wallet is connected to a different network than the app. 
+          Please switch your wallet to {networkConfig.displayName} or change the app network.
         </div>
       )}
 
       <div className="space-y-4">
         {/* Recipient Address */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Recipient Address
           </label>
           <input
             type="text"
             value={recipient}
             onChange={(e) => setRecipient(e.target.value)}
-            placeholder="Enter Cardano address..."
+            placeholder={`Enter ${networkConfig.displayName} address...`}
             className="input-field"
-            disabled={loading}
+            disabled={loading || isNetworkMismatch}
           />
         </div>
 
         {/* Asset Selection */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Asset to Send
           </label>
-          <select
-            value={selectedAsset?.id || ''}
-            onChange={(e) => {
-              const asset = assetOptions.find(a => a.id === e.target.value);
-              setSelectedAsset(asset || null);
-            }}
-            className="input-field"
-            disabled={loading}
-          >
-            <option value="">Select an asset</option>
+          <div className="space-y-2">
             {assetOptions.map((asset) => (
-              <option key={asset.id} value={asset.id}>
-                {asset.label} (Available: {asset.quantity})
-              </option>
+              <label
+                key={asset.id}
+                className={`flex items-center space-x-3 p-3 border rounded-lg cursor-pointer transition-colors duration-200 ${
+                  selectedAsset?.id === asset.id
+                    ? 'border-cardano-blue bg-blue-50 dark:bg-blue-900/20'
+                    : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
+                } ${loading || isNetworkMismatch ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                <input
+                  type="radio"
+                  name="asset"
+                  value={asset.id}
+                  checked={selectedAsset?.id === asset.id}
+                  onChange={() => setSelectedAsset(asset)}
+                  disabled={loading || isNetworkMismatch}
+                  className="sr-only"
+                />
+                <TokenImage 
+                  unit={asset.id === 'ada' ? 'ada' : asset.policyId + (asset.assetName || '')}
+                  className="w-8 h-8"
+                  showName={false}
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-gray-900 dark:text-gray-100">
+                    {asset.label}
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    Available: {asset.quantity}
+                  </div>
+                </div>
+                {selectedAsset?.id === asset.id && (
+                  <div className="w-5 h-5 bg-cardano-blue rounded-full flex items-center justify-center">
+                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                )}
+              </label>
             ))}
-          </select>
+          </div>
         </div>
 
         {/* Amount */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Amount
           </label>
           <div className="relative">
@@ -206,18 +261,18 @@ export default function SendForm({ availableAssets, onTransactionComplete }: Sen
               step="0.000001"
               min="0"
               className="input-field pr-16"
-              disabled={loading}
+              disabled={loading || isNetworkMismatch}
             />
             {selectedAsset && (
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                <span className="text-gray-500 text-sm">
+                <span className="text-gray-500 dark:text-gray-400 text-sm">
                   {selectedAsset.id === 'ada' ? 'ADA' : 'TOKENS'}
                 </span>
               </div>
             )}
           </div>
           {selectedAsset && (
-            <p className="mt-1 text-sm text-gray-600">
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
               Available: {selectedAsset.quantity} {selectedAsset.id === 'ada' ? 'ADA' : 'tokens'}
             </p>
           )}
@@ -226,16 +281,16 @@ export default function SendForm({ availableAssets, onTransactionComplete }: Sen
         {/* Send Button */}
         <button
           onClick={handleSend}
-          disabled={loading || !recipient || !selectedAsset || !amount}
+          disabled={loading || isNetworkMismatch || !recipient || !selectedAsset || !amount}
           className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? (
             <div className="flex items-center justify-center">
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-              Sending...
+              Sending on {networkConfig.displayName}...
             </div>
           ) : (
-            'Send Transaction'
+            `Send on ${networkConfig.displayName}`
           )}
         </button>
       </div>

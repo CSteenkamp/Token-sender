@@ -3,6 +3,10 @@
 import { useState } from 'react';
 import { useWallet, MeshProvider } from '@meshsdk/react';
 import { Asset } from '@meshsdk/core';
+import { ThemeProvider } from './ThemeProvider';
+import { NetworkProvider } from './NetworkProvider';
+import ThemeToggle from './ThemeToggle';
+import NetworkSelector from './NetworkSelector';
 import WalletConnection from './WalletConnection';
 import WalletBalance from './WalletBalance';
 import SendForm from './SendForm';
@@ -27,6 +31,19 @@ function CardanoAppContent() {
 
   return (
     <>
+      {/* App Controls */}
+      <div className="card mb-8">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            App Settings
+          </h2>
+          <div className="flex items-center space-x-3">
+            <NetworkSelector />
+            <ThemeToggle />
+          </div>
+        </div>
+      </div>
+
       {/* Wallet Connection */}
       <WalletConnection />
 
@@ -114,8 +131,12 @@ function CardanoAppContent() {
 
 export default function CardanoApp() {
   return (
-    <MeshProvider>
-      <CardanoAppContent />
-    </MeshProvider>
+    <ThemeProvider>
+      <NetworkProvider>
+        <MeshProvider>
+          <CardanoAppContent />
+        </MeshProvider>
+      </NetworkProvider>
+    </ThemeProvider>
   );
 }
