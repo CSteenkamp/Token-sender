@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import dynamicImport from 'next/dynamic';
 import ClientOnly from '../components/ClientOnly';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 // Force dynamic rendering to avoid WASM prerendering issues
 export const dynamic = 'force-dynamic';
@@ -35,18 +36,20 @@ export default function Home() {
       </div>
 
       {/* Client-side Cardano App */}
-      <ClientOnly
-        fallback={
-          <div className="text-center py-12">
-            <div className="animate-pulse">
-              <div className="h-8 bg-gray-300 rounded w-48 mx-auto mb-4"></div>
-              <div className="h-4 bg-gray-300 rounded w-32 mx-auto"></div>
+      <ErrorBoundary>
+        <ClientOnly
+          fallback={
+            <div className="text-center py-12">
+              <div className="animate-pulse">
+                <div className="h-8 bg-gray-300 rounded w-48 mx-auto mb-4"></div>
+                <div className="h-4 bg-gray-300 rounded w-32 mx-auto"></div>
+              </div>
             </div>
-          </div>
-        }
-      >
-        <DynamicCardanoApp />
-      </ClientOnly>
+          }
+        >
+          <DynamicCardanoApp />
+        </ClientOnly>
+      </ErrorBoundary>
     </div>
   );
 }

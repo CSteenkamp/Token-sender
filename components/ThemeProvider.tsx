@@ -17,12 +17,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('cardano-sender-theme') as Theme;
-    const systemPreference = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    const initialTheme = stored || systemPreference;
-    
-    setThemeState(initialTheme);
-    setMounted(true);
+    try {
+      const stored = localStorage.getItem('cardano-sender-theme') as Theme;
+      const systemPreference = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      const initialTheme = stored || systemPreference;
+      
+      setThemeState(initialTheme);
+    } catch (error) {
+      console.warn('Failed to load theme from localStorage:', error);
+      setThemeState('light');
+    } finally {
+      setMounted(true);
+    }
   }, []);
 
   useEffect(() => {

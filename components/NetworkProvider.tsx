@@ -19,11 +19,17 @@ export function NetworkProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('cardano-sender-network') as NetworkType;
-    const initialNetwork = stored && NETWORKS[stored] ? stored : DEFAULT_NETWORK;
-    
-    setCurrentNetwork(initialNetwork);
-    setMounted(true);
+    try {
+      const stored = localStorage.getItem('cardano-sender-network') as NetworkType;
+      const initialNetwork = stored && NETWORKS[stored] ? stored : DEFAULT_NETWORK;
+      
+      setCurrentNetwork(initialNetwork);
+    } catch (error) {
+      console.warn('Failed to load network from localStorage:', error);
+      setCurrentNetwork(DEFAULT_NETWORK);
+    } finally {
+      setMounted(true);
+    }
   }, []);
 
   useEffect(() => {
