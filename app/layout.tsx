@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import './globals.css';
-import HeaderWalletSection from '../components/HeaderWalletSection';
 
 export const metadata: Metadata = {
   title: 'Cardano Token Sender',
@@ -38,7 +37,9 @@ export default function RootLayout({
                 
                 {/* Wallet Connection Area */}
                 <div className="flex items-center space-x-3">
-                  <HeaderWalletSection />
+                  <button className="px-4 py-2 bg-cardano-blue text-white text-sm font-medium rounded-lg hover:bg-cardano-dark transition-colors">
+                    Connect Wallet
+                  </button>
                 </div>
               </div>
             </div>

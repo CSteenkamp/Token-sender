@@ -1,23 +1,5 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import dynamicImport from 'next/dynamic';
-
-// Force dynamic rendering to avoid WASM prerendering issues
-export const dynamic = 'force-dynamic';
-
-// Dynamically import components that don't need to be server-side rendered
-const DynamicThemeControls = dynamicImport(() => import('../components/DynamicThemeControls'), { ssr: false });
-
 export default function Home() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   return (
-    <>{/* Main Content - Always loads */}
       <div className="space-y-8">
         {/* Hero Section */}
         <div className="text-center">
@@ -37,7 +19,9 @@ export default function Home() {
               App Settings
             </h3>
             <div className="flex items-center space-x-3">
-              {mounted && <DynamicThemeControls />}
+              <button className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-sm">
+                🌙 Dark Mode
+              </button>
             </div>
           </div>
         </div>
@@ -147,6 +131,5 @@ export default function Home() {
           </div>
         </div>
       </div>
-    </>
   );
 }
