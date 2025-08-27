@@ -8,6 +8,10 @@ import ErrorBoundary from '../components/ErrorBoundary';
 // Force dynamic rendering to avoid WASM prerendering issues
 export const dynamic = 'force-dynamic';
 
+// Test components
+const MinimalTest = dynamicImport(() => import('../components/MinimalTest'), { ssr: false });
+const MeshTest = dynamicImport(() => import('../components/MeshTest'), { ssr: false });
+
 // Dynamically import all MeshJS-dependent components
 const DynamicCardanoApp = dynamicImport(() => import('../components/CardanoApp'), {
   ssr: false,
@@ -33,6 +37,17 @@ export default function Home() {
           Connect your Cardano wallet and easily send ADA or native tokens to any address
           on the Cardano preprod testnet.
         </p>
+      </div>
+
+      {/* Test Components */}
+      <div className="space-y-4">
+        <ErrorBoundary>
+          <MinimalTest />
+        </ErrorBoundary>
+        
+        <ErrorBoundary>
+          <MeshTest />
+        </ErrorBoundary>
       </div>
 
       {/* Client-side Cardano App */}
