@@ -5,6 +5,12 @@ export const metadata: Metadata = {
   title: 'Cardano Token Sender',
   description: 'Send ADA and native tokens on the Cardano blockchain',
   keywords: 'cardano, ada, blockchain, crypto, tokens, send',
+  icons: {
+    icon: '/cardano-icon.svg',
+    shortcut: '/cardano-icon.svg',
+    apple: '/cardano-icon.svg',
+  },
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({

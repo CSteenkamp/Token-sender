@@ -1,0 +1,16 @@
+{
+  "name": "Cardano Token Sender",
+  "short_name": "ADA Sender",
+  "description": "Send ADA and native tokens on the Cardano blockchain",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0033ad",
+  "theme_color": "#0033ad",
+  "icons": [
+    {
+      "src": "/cardano-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
