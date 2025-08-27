@@ -1,3 +1,5 @@
+import WorkingThemeToggle from '../components/WorkingThemeToggle';
+
 export default function Home() {
   return (
       <div className="space-y-8">
@@ -19,9 +21,7 @@ export default function Home() {
               App Settings
             </h3>
             <div className="flex items-center space-x-3">
-              <button className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-sm">
-                🌙 Dark Mode
-              </button>
+              <WorkingThemeToggle />
             </div>
           </div>
         </div>
