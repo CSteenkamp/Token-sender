@@ -2,6 +2,8 @@
 
 A simple, clean React web application for sending ADA and native tokens on the Cardano blockchain. Built with Next.js, MeshJS, and TailwindCSS.
 
+🚀 **Version 1.0** - Production Ready
+
 ![Cardano Token Sender](https://img.shields.io/badge/Cardano-Token%20Sender-blue?style=for-the-badge&logo=cardano)
 
 ## Features
