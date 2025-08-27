@@ -31,7 +31,7 @@ export default function Home() {
           <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">Getting Started</h3>
           <div className="space-y-6">
             <div className="flex items-start space-x-4">
-              <div className="w-8 h-8 bg-cardano-blue text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">
+              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">
                 1
               </div>
               <div>
@@ -51,7 +51,7 @@ export default function Home() {
                       href={wallet.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-cardano-blue hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
+                      className="flex items-center justify-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
                     >
                       <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         {wallet.name}
@@ -63,7 +63,7 @@ export default function Home() {
             </div>
             
             <div className="flex items-start space-x-4">
-              <div className="w-8 h-8 bg-cardano-blue text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">
+              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">
                 2
               </div>
               <div>
@@ -86,7 +86,7 @@ export default function Home() {
             </div>
             
             <div className="flex items-start space-x-4">
-              <div className="w-8 h-8 bg-cardano-blue text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">
+              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">
                 3
               </div>
               <div>

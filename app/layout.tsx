@@ -27,7 +27,7 @@ export default function RootLayout({
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-cardano-blue rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                     <span className="text-white font-bold text-sm">₳</span>
                   </div>
                   <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
@@ -37,7 +37,7 @@ export default function RootLayout({
                 
                 {/* Wallet Connection Area */}
                 <div className="flex items-center space-x-3">
-                  <button className="px-4 py-2 bg-cardano-blue text-white text-sm font-medium rounded-lg hover:bg-cardano-dark transition-colors">
+                  <button className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
                     Connect Wallet
                   </button>
                 </div>
