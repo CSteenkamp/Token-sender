@@ -1,5 +1,6 @@
 import WorkingThemeToggle from '../components/WorkingThemeToggle';
 import SimpleNetworkSelector from '../components/SimpleNetworkSelector';
+import WalletBalanceCard from '../components/WalletBalanceCard';
 
 export default function Home() {
   return (
@@ -101,6 +102,9 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        {/* Wallet Balance */}
+        <WalletBalanceCard />
 
         {/* Features */}
         <div className="card">

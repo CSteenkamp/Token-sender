@@ -21,9 +21,15 @@ function WalletConnectionContent() {
     try {
       await connect(walletName);
       setShowWalletList(false);
+      
+      // Store connection status for other components
+      localStorage.setItem('wallet-connected', 'true');
+      localStorage.setItem('wallet-name', walletName);
     } catch (err) {
       console.error('Wallet connection error:', err);
       setError(`Failed to connect to ${walletName}`);
+      localStorage.removeItem('wallet-connected');
+      localStorage.removeItem('wallet-name');
     } finally {
       setIsConnecting(false);
     }
@@ -33,6 +39,10 @@ function WalletConnectionContent() {
     try {
       await disconnect();
       setError('');
+      
+      // Clear connection status
+      localStorage.removeItem('wallet-connected');
+      localStorage.removeItem('wallet-name');
     } catch (err) {
       console.error('Disconnect error:', err);
     }
