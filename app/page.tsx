@@ -8,6 +8,7 @@ export const dynamic = 'force-dynamic';
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [testStep, setTestStep] = useState(0);
+  const [meshStatus, setMeshStatus] = useState<string>('Not tested');
 
   useEffect(() => {
     console.log('Home: Component mounting...');
@@ -17,6 +18,25 @@ export default function Home() {
     const timer = setInterval(() => {
       setTestStep(prev => prev + 1);
     }, 1000);
+
+    // Test MeshJS imports after mount
+    setTimeout(async () => {
+      try {
+        console.log('Testing MeshJS imports...');
+        setMeshStatus('Testing imports...');
+        
+        const meshReact = await import('@meshsdk/react');
+        console.log('✅ @meshsdk/react imported:', meshReact);
+        
+        const meshCore = await import('@meshsdk/core');
+        console.log('✅ @meshsdk/core imported:', meshCore);
+        
+        setMeshStatus('✅ MeshJS imports successful');
+      } catch (error) {
+        console.error('❌ MeshJS import failed:', error);
+        setMeshStatus(`❌ Import failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    }, 2000);
 
     return () => clearInterval(timer);
   }, []);
@@ -59,6 +79,9 @@ export default function Home() {
           <p className="text-green-600">✅ useState and useEffect working</p>
           <p className="text-green-600">✅ Test step: {testStep}</p>
           <p className="text-blue-600">🔍 Client-side JavaScript is working</p>
+          <p className={meshStatus.includes('✅') ? 'text-green-600' : meshStatus.includes('❌') ? 'text-red-600' : 'text-yellow-600'}>
+            🧪 MeshJS Status: {meshStatus}
+          </p>
         </div>
       </div>
 
